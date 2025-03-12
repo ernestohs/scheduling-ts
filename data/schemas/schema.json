@@ -27,9 +27,21 @@
       "type": "object",
       "properties": {
         "date": { "type": "string", "format": "date" },
-        "time": { "type": "string", "format": "time" }
+        "time": { "type": "string", "format": "time" },
+        "timeZone": { "type": "string" }
       },
       "required": ["date", "time"]
+    },
+    "duration": {
+      "type": "object",
+      "properties": {
+        "value": { "type": "integer", "minimum": 1 },
+        "unit": { 
+          "type": "string", 
+          "enum": ["second", "minute", "hour", "day"] 
+        }
+      },
+      "required": ["value", "unit"]
     },
     "weekDay": {
       "type": "string",
@@ -146,4 +158,3 @@
     }
   }
 }
-

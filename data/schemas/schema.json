@@ -1,0 +1,149 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Scheduling Framework Schema",
+  "description": "Schema for a human-readable and developer-friendly scheduling framework",
+  "type": "object",
+  "definitions": {
+    "timeUnit": {
+      "type": "object",
+      "properties": {
+        "value": { "type": "integer", "minimum": 0 },
+        "unit": { 
+          "type": "string", 
+          "enum": ["second", "minute", "hour", "day", "week", "month", "year"] 
+        }
+      },
+      "required": ["value", "unit"]
+    },
+    "timeRange": {
+      "type": "object",
+      "properties": {
+        "start": { "type": "string", "format": "time" },
+        "end": { "type": "string", "format": "time" }
+      },
+      "required": ["start", "end"]
+    },
+    "dateTime": {
+      "type": "object",
+      "properties": {
+        "date": { "type": "string", "format": "date" },
+        "time": { "type": "string", "format": "time" }
+      },
+      "required": ["date", "time"]
+    },
+    "weekDay": {
+      "type": "string",
+      "enum": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    }
+  },
+  "properties": {
+    "appointments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "location": { "type": "string" },
+          "start": { "$ref": "#/definitions/dateTime" },
+          "end": { "$ref": "#/definitions/dateTime" },
+          "attendees": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "email": { "type": "string", "format": "email" },
+                "status": { 
+                  "type": "string", 
+                  "enum": ["confirmed", "tentative", "declined", "invited"] 
+                }
+              },
+              "required": ["name", "email", "status"]
+            }
+          },
+          "reminders": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/timeUnit" }
+          }
+        },
+        "required": ["id", "title", "start", "end"]
+      }
+    },
+    "recurringSchedules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "frequency": {
+            "type": "string",
+            "enum": ["daily", "weekly", "monthly", "yearly", "custom"]
+          },
+          "interval": { "type": "integer", "minimum": 1 },
+          "weekDays": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/weekDay" }
+          },
+          "monthDays": {
+            "type": "array",
+            "items": { "type": "integer", "minimum": 1, "maximum": 31 }
+          },
+          "months": {
+            "type": "array",
+            "items": { "type": "integer", "minimum": 1, "maximum": 12 }
+          },
+          "timeRanges": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/timeRange" }
+          },
+          "startDate": { "type": "string", "format": "date" },
+          "endDate": { "type": "string", "format": "date" },
+          "exceptions": {
+            "type": "array",
+            "items": { "type": "string", "format": "date" }
+          }
+        },
+        "required": ["id", "title", "frequency"]
+      }
+    },
+    "businessHours": {
+      "type": "object",
+      "properties": {
+        "timeZone": { "type": "string" },
+        "schedule": {
+          "type": "object",
+          "properties": {
+            "monday": { "type": "array", "items": { "$ref": "#/definitions/timeRange" } },
+            "tuesday": { "type": "array", "items": { "$ref": "#/definitions/timeRange" } },
+            "wednesday": { "type": "array", "items": { "$ref": "#/definitions/timeRange" } },
+            "thursday": { "type": "array", "items": { "$ref": "#/definitions/timeRange" } },
+            "friday": { "type": "array", "items": { "$ref": "#/definitions/timeRange" } },
+            "saturday": { "type": "array", "items": { "$ref": "#/definitions/timeRange" } },
+            "sunday": { "type": "array", "items": { "$ref": "#/definitions/timeRange" } }
+          }
+        },
+        "holidayExceptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "date": { "type": "string", "format": "date" },
+              "isFullDay": { "type": "boolean" },
+              "altHours": { 
+                "type": "array", 
+                "items": { "$ref": "#/definitions/timeRange" } 
+              }
+            },
+            "required": ["name", "date", "isFullDay"]
+          }
+        }
+      },
+      "required": ["timeZone", "schedule"]
+    }
+  }
+}
+

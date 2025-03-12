@@ -7,6 +7,15 @@
     "timeUnit": {
       "type": "object",
       "properties": {
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "version": { "type": "string" },
+        "calendarId": { "type": "string" },
+        "defaultTimeZone": { "type": "string" },
+        "icalURI": { "type": "string", "format": "uri" }
+      }
+    },
         "value": { "type": "integer", "minimum": 0 },
         "unit": { 
           "type": "string", 
@@ -60,6 +69,7 @@
           "location": { "type": "string" },
           "start": { "$ref": "#/definitions/dateTime" },
           "end": { "$ref": "#/definitions/dateTime" },
+          "duration": { "$ref": "#/definitions/duration" },
           "attendees": {
             "type": "array",
             "items": {
@@ -93,6 +103,10 @@
           "frequency": {
             "type": "string",
             "enum": ["daily", "weekly", "monthly", "yearly", "custom"]
+          },
+          "pattern": {
+            "type": "string",
+            "description": "Advanced recurrence pattern using RRULE format"
           },
           "interval": { "type": "integer", "minimum": 1 },
           "weekDays": {
